@@ -5,17 +5,12 @@ import joblib
 import time
 import pyautogui
 
-# Initialize an empty string to store keystrokes
+
 string_empty = ""
 
-# Load the model from the pickle file
-pipe_lr = joblib.load(open("C:\\Users\\meher\\OneDrive\\Desktop\\LOGGER\\emotion_classifier_pipe_lr_2.pkl", "rb"))
-
-# Function to predict emotion based on collected keystrokes
+pipe_lr = joblib.load(open("<<path of pickle file (.pkl)>", "rb"))
 def predict_emotion(text):
     return pipe_lr.predict([text])[0]
-
-# Function to handle keystrokes
 def on_press(key):
     global string_empty
     try:
@@ -26,33 +21,27 @@ def on_press(key):
         else:
             string_empty += " " + str(key) + " "
 
-# Function to process keystrokes every 30 seconds
 def report():
     global string_empty
     data = string_empty
-    string_empty = ""  # Reset keystroke string after capturing it
+    string_empty = ""  
 
-    # Predict and display the emotion based on the keystrokes
     if data.strip():  # Avoid empty predictions
         emotion = predict_emotion(data)
         print(f"Keystrokes: {data}\nPredicted Emotion: {emotion}")
         
-        # Wait for a short period to ensure output is seen, then clear Notepad content
+
         time.sleep(2)  # Adjust this delay if needed
         pyautogui.hotkey('ctrl', 'a')
         pyautogui.hotkey('ctrl', 'x')
         data1 = "not "
         for i in range(len(data1)):
             pyautogui.press(data1[i])
-        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.hotkey('ctrl', 'v') # this is just for checking the script working on few libraries which are in blog!!
 
-
-
-    # Schedule the next report
-    timer = threading.Timer(10, report)
+    timer = threading.Timer(10, report) #depends on requirement initial prototype code test!!
     timer.start()
 
-# Start the keyboard listener and periodic keystroke reporting
 with keyboard.Listener(on_press=on_press) as listener:
     report()
     listener.join()
